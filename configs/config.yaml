@@ -1,0 +1,133 @@
+# ============================================================
+# VANET Anomaly Detection - Configuration
+# ============================================================
+
+data:
+  raw_csv_path: "data/VeReMi_Extension.csv"
+  processed_dir: "data/processed"
+  test_size: 0.3
+  random_state: 101
+
+preprocessing:
+  # Columns to drop from raw data (z-components + metadata)
+  drop_columns:
+    - type
+    - senderPseudo
+    - messageID
+    - posz
+    - spdz
+    - aclz
+    - hedz
+    - posz_n
+    - spdz_n
+    - aclz_n
+    - hedz_n
+
+  # Columns to drop before training
+  train_drop_columns:
+    - sendTime
+    - sender
+    - class
+    - posx_n
+    - posy_n
+    - spdx_n
+    - spdy_n
+    - hedx_n
+    - hedy_n
+    - aclx
+    - acly
+    - aclx_n
+    - acly_n
+
+  # Tri-class mapping: class_id -> tri_class_label
+  # 0 = Normal, 1 = Malfunction, 2 = Attack
+  malfunction_classes: [1, 2, 3, 4, 15, 16, 18, 19]
+  # Everything else (not 0 and not in malfunction_classes) = Attack (2)
+
+rsu_partitioning:
+  method: "kmeans"  # "grid" or "kmeans"
+
+  # Grid-based partitioning
+  grid:
+    initial_grid_size: 1000
+    dense_threshold: 300000
+    dense_grid_size: 500
+    super_dense_threshold: 500000
+    super_dense_grid_size: 250
+    sparse_min_classes: 3
+    sparse_min_points: 50000
+    sparse_min_points_final: 20000
+
+  # K-Means partitioning
+  kmeans:
+    n_clusters: 5
+    random_state: 42
+
+balancing:
+  method: "smote_tomek"  # "smote", "smote_tomek", or "none"
+  random_state: 42
+
+models:
+  centralized:
+    random_forest:
+      n_estimators: 100
+      random_state: 42
+      n_jobs: -1
+    extra_trees:
+      n_estimators: 100
+      random_state: 42
+      n_jobs: -1
+    xgboost:
+      n_estimators: 100
+      max_depth: 6
+      learning_rate: 0.1
+      objective: "multi:softmax"
+      num_class: 3
+      tree_method: "hist"  # use "gpu_hist" on GPU
+      random_state: 42
+    lstm:
+      units: 128
+      dropout: 0.3
+      epochs: 20
+      batch_size: 256
+      learning_rate: 0.001
+    bilstm:
+      units: 128
+      dropout: 0.3
+      epochs: 20
+      batch_size: 256
+      learning_rate: 0.001
+    cnn:
+      filters: [64, 128]
+      kernel_size: 3
+      dropout: 0.3
+      epochs: 20
+      batch_size: 256
+      learning_rate: 0.001
+
+federated:
+  num_rounds: 10
+  strategy: "cyclic"  # "cyclic" or "fedavg"
+  
+  fed_xgb:
+    n_estimators: 100
+    max_depth: 6
+    learning_rate: 0.1
+  fed_lstm:
+    units: 128
+    dropout: 0.3
+    local_epochs: 3
+    batch_size: 256
+    learning_rate: 0.001
+  fed_cnn:
+    filters: [64, 128]
+    kernel_size: 3
+    dropout: 0.3
+    local_epochs: 3
+    batch_size: 256
+    learning_rate: 0.001
+
+evaluation:
+  metrics: ["accuracy", "precision", "recall", "f1", "auc"]
+  average: "weighted"
+  output_dir: "results"
