@@ -146,4 +146,4 @@ Paper citation will be added upon publication.
 
 ## License
 
-This project is for academic research purposes. Please contact the authors for commercial use.
+This project is for academic research purposes.
