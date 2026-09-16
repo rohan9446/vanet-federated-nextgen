@@ -1,10 +1,9 @@
 # RSU-Aware Federated Learning for V2X Misbehavior Detection on VeReMi NextGen
 
-This repository contains the code and experimental pipeline for our paper:
+This repository contains the code and experimental pipeline of our work:
 
 > **RSU-Aware Federated Learning for V2X Misbehavior Detection: An Evaluation on VeReMi NextGen**
 > Bandaru Rohan Satya Balaji, Sreenivasa Chakravarthi Sangapu
-> *Submitted to Journal of Data Science and Intelligent Systems (JDSIS)*
 
 ## Overview
 
